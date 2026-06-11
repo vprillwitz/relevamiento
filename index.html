@@ -338,7 +338,9 @@
     document.getElementById('display').textContent = '00:00:00';
     document.getElementById('obs').value = '';
     // Si el cronometro estaba corriendo, seguir corriendo
-    if (!running) {
+    if (running) {
+      document.getElementById('statusBar').innerHTML = '<span class="running-dot"></span>Corriendo...';
+    } else {
       document.getElementById('btnSave').disabled = true;
       document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
       document.getElementById('statusBar').innerHTML = '';
@@ -348,9 +350,11 @@
   }
 
   function deleteTramo(id) {
-    logs = logs.filter(l => l.id !== id);
-    localStorage.setItem('timelogs_v4', JSON.stringify(logs));
-    renderChart(); renderLogs();
+    showConfirm('¿Eliminar este tramo?', function() {
+      logs = logs.filter(l => l.id !== id);
+      localStorage.setItem('timelogs_v4', JSON.stringify(logs));
+      renderChart(); renderLogs();
+    }, true);
   }
 
   function clearAll() {
@@ -419,7 +423,7 @@
       '</table>';
   }
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3_3YR-0ugKrNkhXv3ixhcAXBMxql8fYGMu4VEFD2IpXXs9KhmQXH7cTnQw6vV0_0U/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyH26gaZy5JkU0gA9cQJavGS44a74N4O91xm7i8m--RUdMbhiERFIP5zaescKoD-9aT/exec';
 
   async function guardarEnSheets() {
     if (!logs.length) { showToast('No hay registros para guardar'); return; }
