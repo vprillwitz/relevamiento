@@ -2,12 +2,12 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Registro de Tiempos</title>
+<meta name="viewport" content="width=390, initial-scale=1.0, shrink-to-fit=no">
+<title>Relevamiento de Tiempos</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; min-height: 100vh; color: #1c1c1e; }
-  .wrap { padding: 1rem; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; padding-bottom: 2rem; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2f2f7; min-height: 100vh; color: #1c1c1e; margin: 0; }
+  .wrap { padding: 1rem; max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; padding-bottom: 2rem; }
   .card { background: #ffffff; border-radius: 14px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   .timer { font-size: 64px; font-weight: 300; text-align: center; letter-spacing: -2px; color: #1c1c1e; font-variant-numeric: tabular-nums; margin: 0.5rem 0 0.25rem; }
   .btn-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 1.25rem; }
@@ -50,8 +50,41 @@
   .tipo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .tipo-btn { padding: 10px 8px; font-size: 14px; border-radius: 10px; border: 1.5px solid #d1d1d6; background: #fff; color: #6e6e73; text-align: center; transition: all 0.15s; font-weight: 500; }
   .tipo-btn.selected { background: #1c1c1e; color: #fff; border-color: transparent; font-weight: 700; }
+  .menu-btn { background: none; border: none; padding: 4px 8px; cursor: pointer; color: #aeaeb2; font-size: 20px; border-radius: 6px; line-height: 1; }
+  .menu-btn:active { background: #f2f2f7; }
+  .menu-dropdown { display: none; position: absolute; right: 0; top: 28px; background: #fff; border: 1px solid #e5e5ea; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; min-width: 130px; overflow: hidden; }
+  .menu-dropdown.open { display: block; }
+  .menu-dropdown button { display: block; width: 100%; text-align: left; padding: 10px 14px; font-size: 14px; background: none; border: none; cursor: pointer; color: #1c1c1e; font-weight: 500; }
+  .menu-dropdown button:hover { background: #f2f2f7; }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #fff; border-radius: 14px; padding: 1.25rem; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
+  .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 1rem; color: #1c1c1e; }
+  .modal-btns { display: flex; gap: 8px; margin-top: 1rem; }
+  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1.5px solid #d1d1d6; background: #fff; cursor: pointer; }
+  .modal-btns button.primary { background: #1c1c1e; color: #fff; border-color: transparent; }
 
   @media (prefers-color-scheme: dark) {
+    .titulo-app { color: #f2f2f7 !important; }
+    .modal { background: #1c1c1e; }
+    .modal h3 { color: #f2f2f7; }
+    .modal-overlay { background: rgba(0,0,0,0.6); }
+    .menu-dropdown { background: #2c2c2e; border-color: #3a3a3c; }
+    .menu-dropdown button { color: #f2f2f7; }
+    .menu-dropdown button:hover { background: #3a3a3c; }
+    .modal-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
+    .modal-btns button.primary { background: #f2f2f7; color: #1c1c1e; }
+    .confirm-box { background: #1c1c1e; }
+    .confirm-box p { color: #f2f2f7; }
+    .confirm-box-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
+  .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
+  .confirm-overlay.open { display: flex; }
+  .confirm-box { background: #fff; border-radius: 14px; padding: 1.5rem 1.25rem 1.25rem; width: 100%; max-width: 320px; text-align: center; }
+  .confirm-box p { font-size: 16px; font-weight: 500; color: #1c1c1e; margin-bottom: 1.25rem; line-height: 1.4; }
+  .confirm-box-btns { display: flex; gap: 8px; }
+  .confirm-box-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1.5px solid #d1d1d6; background: #fff; cursor: pointer; color: #1c1c1e; }
+  .confirm-box-btns button.danger { background: #ff3b30; color: #fff; border-color: transparent; }
+  .confirm-box-btns button.confirm-ok { background: #1c1c1e; color: #fff; border-color: transparent; }
     body { background: #000; color: #f2f2f7; }
     .card { background: #1c1c1e; box-shadow: none; }
     .timer { color: #f2f2f7; }
@@ -82,6 +115,10 @@
 <body>
 <div class="wrap">
 
+  <div style="text-align:center; padding: 0.5rem 0 0.25rem;">
+    <div class="titulo-app" style="font-size:32px; font-weight:700; color:#1c1c1e; letter-spacing:-0.5px;">Relevamiento de Tiempos</div>
+  </div>
+
   <div class="card">
     <div class="timer" id="display">00:00:00</div>
     <div class="status-bar" id="statusBar"></div>
@@ -89,7 +126,6 @@
       <button class="primary" id="btnToggle" onclick="toggleTimer()">&#9654; Iniciar</button>
       <button onclick="resetTimer()">&#8635; Reiniciar</button>
     </div>
-
     <div class="grid2">
       <div class="field">
         <label for="sector">Sector</label>
@@ -109,13 +145,22 @@
       </div>
     </div>
     <div class="field">
-      <label for="material">Material</label>
+      <label for="material">Material <span style="color:#ff3b30;">*</span></label>
       <input type="text" id="material" placeholder="Ej: 72969-1 C" />
     </div>
-
+    <div class="grid2">
+      <div class="field">
+        <label for="puesto">Puesto de trabajo</label>
+        <input type="text" id="puesto" placeholder="Ej: PHID" />
+      </div>
+      <div class="field">
+        <label for="personas">Cant. de personas</label>
+        <input type="number" id="personas" placeholder="Ej: 2" min="1" />
+      </div>
+    </div>
     <div class="field">
       <label>Tipo de Tarea</label>
-      <div class="tipo-grid" id="tipoGrid">
+      <div class="tipo-grid">
         <button class="tipo-btn selected" onclick="selectTipo(this)">Preparación</button>
         <button class="tipo-btn" onclick="selectTipo(this)">Trabajo</button>
         <button class="tipo-btn" onclick="selectTipo(this)">Desarme</button>
@@ -127,7 +172,6 @@
         <input type="text" id="otrosTexto" placeholder="Describi la tarea..." />
       </div>
     </div>
-
     <div class="field">
       <label for="obs">Observaciones</label>
       <textarea id="obs" placeholder="Opcional..."></textarea>
@@ -151,15 +195,56 @@
     </div>
   </div>
 
-  <div class="card" id="cardPapelera" style="display:none;">
-    <div class="header-row">
-      <div class="section-title" style="margin-bottom:0;">Papelera</div>
-      <button class="csv-btn" style="color:#ff3b30; border-color:#ffcccb;" onclick="vaciarPapelera()">Vaciar</button>
-    </div>
-    <p style="font-size:13px; color:#6e6e73; margin-bottom:12px;">Tramos ya guardados en Sheets</p>
-    <div id="papeleraArea"></div>
-  </div>
+</div>
 
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <p id="confirmMsg"></p>
+    <div class="confirm-box-btns">
+      <button onclick="confirmCancel()">Cancelar</button>
+      <button class="confirm-ok" id="confirmOkBtn" onclick="confirmOk()">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>Modificar Tramo</h3>
+    <div class="field">
+      <label>Sector</label>
+      <select id="editSector">
+        <option>Mecánica</option><option>Montaje</option><option>Prueba Hidráulica</option>
+        <option>Engrase</option><option>Lavado</option><option>Granallado</option><option>Pintura</option>
+      </select>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Orden</label><input type="text" id="editOrden" /></div>
+      <div class="field"><label>Material</label><input type="text" id="editMaterial" /></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>Puesto</label><input type="text" id="editPuesto" /></div>
+      <div class="field"><label>Personas</label><input type="number" id="editPersonas" min="1" /></div>
+    </div>
+    <div class="field">
+      <label>Tipo de Tarea</label>
+      <div class="tipo-grid" id="editTipoGrid">
+        <button class="tipo-btn" onclick="selectEditTipo(this)">Preparación</button>
+        <button class="tipo-btn" onclick="selectEditTipo(this)">Trabajo</button>
+        <button class="tipo-btn" onclick="selectEditTipo(this)">Desarme</button>
+        <button class="tipo-btn" onclick="selectEditTipo(this)">Ineficiencias</button>
+        <button class="tipo-btn" onclick="selectEditTipo(this)">Retrabajo</button>
+        <button class="tipo-btn" onclick="selectEditTipo(this)" id="editBtnOtros">Otros</button>
+      </div>
+      <div id="editOtrosField" style="display:none; margin-top:8px;">
+        <input type="text" id="editOtrosTexto" placeholder="Describi la tarea..." />
+      </div>
+    </div>
+    <div class="field"><label>Observaciones</label><textarea id="editObs"></textarea></div>
+    <div class="modal-btns">
+      <button onclick="closeEditModal()">Cancelar</button>
+      <button class="primary" onclick="saveEdit()">Guardar</button>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -169,7 +254,6 @@
   const TIPOS = ['Preparación','Trabajo','Desarme','Ineficiencias','Retrabajo','Otros'];
   let seconds = 0, running = false, interval = null;
   let logs = JSON.parse(localStorage.getItem('timelogs_v4') || '[]');
-  let trash = JSON.parse(localStorage.getItem('timelogs_trash') || '[]');
 
   function fmt(s) {
     return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(n => String(n).padStart(2,'0')).join(':');
@@ -193,10 +277,7 @@
     return sel.textContent;
   }
 
-  function tick() {
-    seconds++;
-    document.getElementById('display').textContent = fmt(seconds);
-  }
+  function tick() { seconds++; document.getElementById('display').textContent = fmt(seconds); }
 
   function toggleTimer() {
     running = !running;
@@ -207,7 +288,7 @@
       btn.innerHTML = '&#9646;&#9646; Pausar';
       btn.classList.add('primary');
       bar.innerHTML = '<span class="running-dot"></span>Corriendo...';
-      document.getElementById('btnSave').disabled = true;
+      document.getElementById('btnSave').disabled = false;
     } else {
       clearInterval(interval);
       btn.innerHTML = '&#9654; Continuar';
@@ -217,6 +298,10 @@
   }
 
   function resetTimer() {
+    if (seconds > 0) { showConfirm('¿Reiniciar el cronómetro?', doReset, true); return; }
+    doReset();
+  }
+  function doReset() {
     running = false; clearInterval(interval); seconds = 0;
     document.getElementById('display').textContent = '00:00:00';
     document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
@@ -227,14 +312,21 @@
 
   function saveTramo() {
     if (seconds === 0) return;
+    if (!document.getElementById('material').value.trim()) {
+      document.getElementById('material').focus();
+      showToast('El material es obligatorio');
+      return;
+    }
     const now = new Date();
     const rec = {
       id: Date.now(),
       fecha: now.toLocaleDateString('es-AR'),
       hora: now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}),
       sector: document.getElementById('sector').value,
-      orden: document.getElementById('orden').value || '-',
-      material: document.getElementById('material').value || '-',
+      orden: (document.getElementById('orden').value || '-').trimEnd(),
+      material: (document.getElementById('material').value || '-').trimEnd(),
+      puesto: document.getElementById('puesto').value.trim() || '-',
+      personas: document.getElementById('personas').value || '-',
       tipo: getTipo(),
       segundos: seconds,
       duracion: fmt(seconds),
@@ -242,16 +334,17 @@
     };
     logs.push(rec);
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
-
     seconds = 0;
     document.getElementById('display').textContent = '00:00:00';
-    document.getElementById('btnSave').disabled = true;
-    document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
-    document.getElementById('statusBar').innerHTML = '';
     document.getElementById('obs').value = '';
-
+    // Si el cronometro estaba corriendo, seguir corriendo
+    if (!running) {
+      document.getElementById('btnSave').disabled = true;
+      document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
+      document.getElementById('statusBar').innerHTML = '';
+    }
     showToast('Tramo guardado: ' + rec.tipo + ' · ' + rec.duracion);
-    renderChart(); renderLogs(); renderPapelera();
+    renderChart(); renderLogs();
   }
 
   function deleteTramo(id) {
@@ -261,36 +354,12 @@
   }
 
   function clearAll() {
-    if (!confirm('Borrar TODOS los registros? Esta accion no se puede deshacer.')) return;
+    showConfirm('¿Borrar TODOS los registros?', doClearAll, true);
+  }
+  function doClearAll() {
     logs = [];
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
     renderChart(); renderLogs();
-  }
-
-  function vaciarPapelera() {
-    if (!confirm('Borrar definitivamente los tramos de la papelera?')) return;
-    trash = [];
-    localStorage.setItem('timelogs_trash', JSON.stringify(trash));
-    renderPapelera();
-  }
-
-  function renderPapelera() {
-    const card = document.getElementById('cardPapelera');
-    if (!trash.length) { card.style.display = 'none'; return; }
-    card.style.display = 'block';
-    const rows = trash.slice(0, 100).map(l =>
-      '<tr>' +
-      '<td style="white-space:nowrap;">' + l.fecha + '<br><span style="color:#aeaeb2;font-size:11px;">' + l.hora + '</span></td>' +
-      '<td style="max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + l.sector + '</td>' +
-      '<td><span class="badge" style="background:' + (COLORS[l.tipo]||COLORS['Otros']) + '22; color:' + (COLORS[l.tipo]||COLORS['Otros']) + ';">' + l.tipo + '</span></td>' +
-      '<td style="font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:500;">' + l.duracion + '</td>' +
-      '</tr>'
-    ).join('');
-    document.getElementById('papeleraArea').innerHTML =
-      '<table class="log-table">' +
-      '<thead><tr><th>Fecha</th><th>Sector</th><th>Tipo</th><th>Tiempo</th></tr></thead>' +
-      '<tbody>' + rows + '</tbody>' +
-      '</table>';
   }
 
   function renderChart() {
@@ -308,7 +377,6 @@
     });
     const maxSec = Math.max(...Object.values(totals), 1);
     const totalSec = Object.values(totals).reduce((a,b)=>a+b,0);
-
     const html = TIPOS.map(tipo => {
       const s = totals[tipo];
       const pct = (s / maxSec * 100).toFixed(1);
@@ -317,7 +385,6 @@
         '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background:' + COLORS[tipo] + ';"></div></div>' +
         '</div>';
     }).join('');
-
     document.getElementById('chartArea').innerHTML = html +
       '<div class="total-row"><span>Total</span><span>' + fmt(totalSec) + '</span></div>';
   }
@@ -336,10 +403,15 @@
       '<td style="max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + l.sector + '</td>' +
       '<td><span class="badge" style="background:' + (COLORS[l.tipo]||COLORS['Otros']) + '22; color:' + (COLORS[l.tipo]||COLORS['Otros']) + ';">' + l.tipo + '</span></td>' +
       '<td style="font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:500;">' + l.duracion + '</td>' +
-      '<td><button class="delete-btn" onclick="deleteTramo(' + l.id + ')">x</button></td>' +
+      '<td style="position:relative;">' +
+        '<button class="menu-btn" onclick="toggleMenu(event,' + l.id + ')">⋮</button>' +
+        '<div class="menu-dropdown" id="menu-' + l.id + '">' +
+          '<button onclick="editTramo(' + l.id + ');closeMenus()">Modificar</button>' +
+          '<button onclick="deleteTramo(' + l.id + ');closeMenus()" style="color:#ff3b30;">Eliminar</button>' +
+        '</div>' +
+      '</td>' +
       '</tr>'
     ).join('');
-
     document.getElementById('logArea').innerHTML =
       '<table class="log-table">' +
       '<thead><tr><th>Fecha</th><th>Sector</th><th>Tipo</th><th>Tiempo</th><th></th></tr></thead>' +
@@ -347,32 +419,132 @@
       '</table>';
   }
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw18fBq8X9Lj5lu9ZAZfH8nUaLgaR7gf1PV2Y4PxEQdWB80FJsp8Xd_vUr5ZcF1Ulh0/exec';
-
-  async function guardarEnSheets() {
+  function guardarEnSheets() {
     if (!logs.length) { showToast('No hay registros para guardar'); return; }
     const btn = document.getElementById('btnSheets');
     btn.disabled = true;
     btn.textContent = 'Guardando...';
-
     const rows = [...logs].reverse().map(l =>
-      [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs]
+      [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs, l.puesto || '-', l.personas || '-']
     );
+    google.script.run
+      .withSuccessHandler(function() {
+        logs = [];
+        localStorage.setItem('timelogs_v4', JSON.stringify(logs));
+        renderChart(); renderLogs();
+        showToast('Guardado en Sheets');
+        btn.disabled = false;
+        btn.innerHTML = '&#8679; Guardar en Sheets';
+      })
+      .withFailureHandler(function(e) {
+        showToast('No se pudo guardar. Intentá de nuevo.');
+        btn.disabled = false;
+        btn.innerHTML = '&#8679; Guardar en Sheets';
+      })
+      .guardarTramos(rows);
+  }
 
-    try {
-      await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ rows })
-      });
-      showToast('Guardado en Sheets');
-    } catch(e) {
-      showToast('Error al guardar');
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = '&#8679; Guardar en Sheets';
+  var confirmCallback = null;
+
+  function showConfirm(msg, callback, isDanger) {
+    confirmCallback = callback;
+    document.getElementById('confirmMsg').textContent = msg;
+    var okBtn = document.getElementById('confirmOkBtn');
+    okBtn.className = isDanger ? 'danger' : 'confirm-ok';
+    document.getElementById('confirmOverlay').classList.add('open');
+  }
+
+  function confirmOk() {
+    document.getElementById('confirmOverlay').classList.remove('open');
+    if (confirmCallback) { confirmCallback(); confirmCallback = null; }
+  }
+
+  function confirmCancel() {
+    document.getElementById('confirmOverlay').classList.remove('open');
+    confirmCallback = null;
+  }
+
+  var editingId = null;
+
+  function toggleMenu(e, id) {
+    e.stopPropagation();
+    closeMenus();
+    var menu = document.getElementById('menu-' + id);
+    if (menu) menu.classList.add('open');
+  }
+
+  function closeMenus() {
+    document.querySelectorAll('.menu-dropdown').forEach(function(m) { m.classList.remove('open'); });
+  }
+
+  document.addEventListener('click', closeMenus);
+
+  function editTramo(id) {
+    var rec = logs.find(function(l) { return l.id === id; });
+    if (!rec) return;
+    editingId = id;
+    document.getElementById('editSector').value = rec.sector;
+    document.getElementById('editOrden').value = rec.orden === '-' ? '' : rec.orden;
+    document.getElementById('editMaterial').value = rec.material === '-' ? '' : rec.material;
+    document.getElementById('editPuesto').value = rec.puesto === '-' ? '' : (rec.puesto || '');
+    document.getElementById('editPersonas').value = rec.personas === '-' ? '' : (rec.personas || '');
+    document.getElementById('editObs').value = rec.obs === '-' ? '' : rec.obs;
+
+    // Seleccionar tipo
+    var tipo = rec.tipo;
+    var tiposBtnTexts = ['Preparación','Trabajo','Desarme','Ineficiencias','Retrabajo','Otros'];
+    document.querySelectorAll('#editTipoGrid .tipo-btn').forEach(function(b) { b.classList.remove('selected'); });
+    document.getElementById('editOtrosField').style.display = 'none';
+    var found = false;
+    document.querySelectorAll('#editTipoGrid .tipo-btn').forEach(function(b) {
+      if (b.textContent === tipo) { b.classList.add('selected'); found = true; }
+    });
+    if (!found) {
+      document.getElementById('editBtnOtros').classList.add('selected');
+      document.getElementById('editOtrosField').style.display = 'block';
+      document.getElementById('editOtrosTexto').value = tipo;
     }
+    document.getElementById('editModal').classList.add('open');
+  }
+
+  function selectEditTipo(btn) {
+    document.querySelectorAll('#editTipoGrid .tipo-btn').forEach(function(b) { b.classList.remove('selected'); });
+    btn.classList.add('selected');
+    var isOtros = btn.id === 'editBtnOtros';
+    document.getElementById('editOtrosField').style.display = isOtros ? 'block' : 'none';
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.remove('open');
+    editingId = null;
+  }
+
+  function getEditTipo() {
+    var sel = document.querySelector('#editTipoGrid .tipo-btn.selected');
+    if (!sel) return 'Preparación';
+    if (sel.id === 'editBtnOtros') {
+      var txt = document.getElementById('editOtrosTexto').value.trim();
+      return txt ? txt : 'Otros';
+    }
+    return sel.textContent;
+  }
+
+  function saveEdit() {
+    var mat = document.getElementById('editMaterial').value.trim();
+    if (!mat) { showToast('El material es obligatorio'); return; }
+    var idx = logs.findIndex(function(l) { return l.id === editingId; });
+    if (idx === -1) return;
+    logs[idx].sector = document.getElementById('editSector').value;
+    logs[idx].orden = (document.getElementById('editOrden').value || '-').trimEnd();
+    logs[idx].material = mat.trimEnd();
+    logs[idx].puesto = document.getElementById('editPuesto').value.trim() || '-';
+    logs[idx].personas = document.getElementById('editPersonas').value || '-';
+    logs[idx].tipo = getEditTipo();
+    logs[idx].obs = document.getElementById('editObs').value.trim() || '-';
+    localStorage.setItem('timelogs_v4', JSON.stringify(logs));
+    closeEditModal();
+    renderChart(); renderLogs();
+    showToast('Tramo modificado');
   }
 
   function showToast(msg) {
