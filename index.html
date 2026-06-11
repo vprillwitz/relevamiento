@@ -211,22 +211,30 @@
 <div class="modal-overlay" id="editModal">
   <div class="modal">
     <h3>Modificar Tramo</h3>
+    <div class="field" style="text-align:center; margin-bottom:8px;">
+      <label>Duración</label>
+      <input type="text" id="editDuracion" placeholder="00:00:00" style="text-align:center; font-size:28px; font-weight:300; letter-spacing:-1px; font-variant-numeric:tabular-nums;" />
+    </div>
     <div class="field">
-      <label>Sector</label>
-      <select id="editSector">
-        <option>Mecánica</option><option>Montaje</option><option>Prueba Hidráulica</option>
-        <option>Engrase</option><option>Lavado</option><option>Granallado</option><option>Pintura</option>
-      </select>
+      <label>Usuario</label>
+      <input type="text" id="editUsuario" />
     </div>
     <div class="grid2">
+      <div class="field">
+        <label>Sector</label>
+        <select id="editSector">
+          <option>Mecánica</option><option>Montaje</option><option>Prueba Hidráulica</option>
+          <option>Engrase</option><option>Lavado</option><option>Granallado</option><option>Pintura</option>
+        </select>
+      </div>
       <div class="field"><label>Orden</label><input type="text" id="editOrden" /></div>
-      <div class="field"><label>Material <span style="color:#ff3b30;">*</span></label><input type="text" id="editMaterial" /></div>
     </div>
+    <div class="field"><label>Material <span style="color:#ff3b30;">*</span></label><input type="text" id="editMaterial" /></div>
     <div class="grid2">
-      <div class="field"><label>Puesto</label><input type="text" id="editPuesto" /></div>
-      <div class="field"><label>Personas</label><input type="number" id="editPersonas" min="1" /></div>
+      <div class="field"><label>Puesto de trabajo</label><input type="text" id="editPuesto" /></div>
+      <div class="field"><label>Cant. de personas</label><input type="number" id="editPersonas" min="1" /></div>
     </div>
-    <div class="field"><label>Observaciones</label><textarea id="editObs"></textarea></div>
+    <div class="field"><label>Observaciones</label><textarea id="editObs" placeholder="Opcional..."></textarea></div>
     <div class="field">
       <label>Tipo de Tarea</label>
       <div class="tipo-grid" id="editTipoGrid">
@@ -238,7 +246,7 @@
         <button class="tipo-btn" onclick="selectEditTipo(this)" id="editBtnOtros">Otros</button>
       </div>
       <div id="editOtrosField" style="display:none; margin-top:8px;">
-        <input type="text" id="editOtrosTexto" placeholder="Describí la tarea..." />
+        <input type="text" id="editOtrosTexto" placeholder="Describí la tarea... *" />
       </div>
     </div>
     <div class="modal-btns">
@@ -336,7 +344,6 @@
     seconds = 0;
     document.getElementById('display').textContent = '00:00:00';
     document.getElementById('obs').value = '';
-    document.getElementById('usuario').value = '';
     document.getElementById('otrosTexto').value = '';
     document.getElementById('otrosField').style.display = 'none';
     // Mantener el botón del tipo guardado como seleccionado
@@ -470,7 +477,7 @@
       '</table>';
   }
 
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwlhz7pBtaRcsZGyCg8MjC5-FohqGTzsOwtHCHLjwbF1nKNqCenwsmOQqyet26n8Oxw/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxBocySwCVESlF5vnKqMQFtPLB1C9kEsSwHtSO7c5Vkve3U8ZhsGarugSgWYAsRfh1t/exec';
 
   async function guardarEnSheets() {
     if (!logs.length) { showToast('No hay registros para guardar'); return; }
@@ -536,7 +543,9 @@
     var rec = logs.find(function(l) { return l.id === id; });
     if (!rec) return;
     editingId = id;
+    document.getElementById('editDuracion').value = rec.duracion || '00:00:00';
     document.getElementById('editSector').value = rec.sector;
+    document.getElementById('editUsuario').value = rec.usuario === '-' ? '' : (rec.usuario || '');
     document.getElementById('editOrden').value = rec.orden === '-' ? '' : rec.orden;
     document.getElementById('editMaterial').value = rec.material === '-' ? '' : rec.material;
     document.getElementById('editPuesto').value = rec.puesto === '-' ? '' : (rec.puesto || '');
@@ -553,6 +562,11 @@
       document.getElementById('editBtnOtros').classList.add('selected');
       document.getElementById('editOtrosField').style.display = 'block';
       document.getElementById('editOtrosTexto').value = tipo;
+    } else {
+      // Si el tipo encontrado es Otros (botón Otros seleccionado), mostrar el campo
+      if (document.getElementById('editBtnOtros').classList.contains('selected')) {
+        document.getElementById('editOtrosField').style.display = 'block';
+      }
     }
     document.getElementById('editModal').classList.add('open');
   }
@@ -579,18 +593,39 @@
     return sel.textContent.trim();
   }
 
+  function hmsToSec(hms) {
+    var parts = (hms || '').trim().split(':');
+    if (parts.length !== 3) return 0;
+    var h = parseInt(parts[0]), m = parseInt(parts[1]), s = parseInt(parts[2]);
+    if (isNaN(h) || isNaN(m) || isNaN(s)) return 0;
+    return h * 3600 + m * 60 + s;
+  }
+
   function saveEdit() {
     var mat = document.getElementById('editMaterial').value.trim();
     if (!mat) { showToast('El material es obligatorio'); return; }
+    var editOtrosBtn = document.getElementById('editBtnOtros');
+    if (editOtrosBtn.classList.contains('selected')) {
+      var otrosTxt = document.getElementById('editOtrosTexto').value.trim();
+      if (!otrosTxt) { document.getElementById('editOtrosTexto').focus(); showToast('Describí la tarea en "Otros"'); return; }
+    }
+    var durStr = document.getElementById('editDuracion').value.trim();
+    var durSec = hmsToSec(durStr);
+    if (durSec <= 0) { showToast('La duración debe ser mayor a 00:00:00'); return; }
+
     var idx = logs.findIndex(function(l) { return l.id === editingId; });
     if (idx === -1) return;
     logs[idx].sector = document.getElementById('editSector').value;
+    logs[idx].usuario = document.getElementById('editUsuario').value.trim() || '-';
     logs[idx].orden = (document.getElementById('editOrden').value || '-').trimEnd();
     logs[idx].material = mat.trimEnd();
     logs[idx].puesto = document.getElementById('editPuesto').value.trim() || '-';
     logs[idx].personas = document.getElementById('editPersonas').value || '1';
     logs[idx].tipo = getEditTipo();
     logs[idx].obs = document.getElementById('editObs').value.trim() || '-';
+    logs[idx].duracion = fmt(durSec);
+    logs[idx].segundos = durSec;
+
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
     closeEditModal();
     renderChart(); renderLogs();
@@ -602,6 +637,30 @@
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
+
+  // Formato automático HH:MM:SS en editDuracion
+  document.getElementById('editDuracion').addEventListener('input', function(e) {
+    var raw = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+    var formatted = '';
+    if (raw.length <= 2) {
+      formatted = raw;
+    } else if (raw.length <= 4) {
+      formatted = raw.slice(0,2) + ':' + raw.slice(2);
+    } else {
+      formatted = raw.slice(0,2) + ':' + raw.slice(2,4) + ':' + raw.slice(4);
+    }
+    e.target.value = formatted;
+  });
+
+  document.getElementById('editDuracion').addEventListener('keydown', function(e) {
+    if (e.key === 'Backspace') {
+      var val = e.target.value;
+      if (val.endsWith(':')) {
+        e.preventDefault();
+        e.target.value = val.slice(0, -1);
+      }
+    }
+  });
 
   // Botón guardar para "Otros"
   document.getElementById('otrosTexto').addEventListener('keydown', function(e) {
