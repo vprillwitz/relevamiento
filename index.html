@@ -277,7 +277,11 @@
     return sel.textContent;
   }
 
-  function tick() { seconds++; document.getElementById('display').textContent = fmt(seconds); }
+  function tick() {
+    seconds++;
+    document.getElementById('display').textContent = fmt(seconds);
+    if (seconds >= 1) document.getElementById('btnSave').disabled = false;
+  }
 
   function toggleTimer() {
     running = !running;
@@ -288,12 +292,13 @@
       btn.innerHTML = '&#9646;&#9646; Pausar';
       btn.classList.add('primary');
       bar.innerHTML = '<span class="running-dot"></span>Corriendo...';
-      document.getElementById('btnSave').disabled = false;
+      document.getElementById('btnSave').disabled = true;
     } else {
       clearInterval(interval);
       btn.innerHTML = '&#9654; Continuar';
       bar.innerHTML = '';
-      if (seconds > 0) document.getElementById('btnSave').disabled = false;
+      document.getElementById('statusBar').innerHTML = '';
+      if (seconds >= 1) document.getElementById('btnSave').disabled = false;
     }
   }
 
