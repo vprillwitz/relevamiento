@@ -290,7 +290,7 @@
     const bar = document.getElementById('statusBar');
     if (running) {
       interval = setInterval(tick, 1000);
-      btn.innerHTML = '<i class="ti ti-player-pause" aria-hidden="true"></i> Pausar';
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pausar';
       btn.classList.add('primary');
       bar.innerHTML = '<span class="running-dot"></span>Corriendo...';
       document.getElementById('btnSave').disabled = true;
