@@ -143,7 +143,7 @@
   <div class="card">
     <div class="header-row">
       <div class="section-title" style="margin-bottom:0;">Tramos registrados</div>
-      <button class="csv-btn" onclick="exportCSV()">&#8595; Exportar CSV</button>
+      <button class="csv-btn" onclick="guardarEnSheets()" id="btnSheets">&#8679; Guardar en Sheets</button>
     </div>
     <div id="logArea"><p class="empty">Sin registros aún</p></div>
     <div id="clearRow" style="display:none;">
@@ -311,27 +311,32 @@
       '</table>';
   }
 
-  function exportCSV() {
-    if (!logs.length) { showToast('No hay registros para exportar'); return; }
-    const header = ['Fecha','Hora','Sector','Orden','Material','Tipo de Tarea','Duración','Observaciones'];
-    const rows = logs.map(l =>
-      [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs].map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw18fBq8X9Lj5lu9ZAZfH8nUaLgaR7gf1PV2Y4PxEQdWB80FJsp8Xd_vUr5ZcF1Ulh0/exec';
+
+  async function guardarEnSheets() {
+    if (!logs.length) { showToast('No hay registros para guardar'); return; }
+    const btn = document.getElementById('btnSheets');
+    btn.disabled = true;
+    btn.textContent = 'Guardando...';
+
+    const rows = [...logs].reverse().map(l =>
+      [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs]
     );
-    const csv = '\uFEFF' + [header.join(','), ...rows].join('\r\n');
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    const nd = new Date();
-    const dd = String(nd.getDate()).padStart(2,'0');
-    const mm = String(nd.getMonth()+1).padStart(2,'0');
-    const aa = String(nd.getFullYear()).slice(-2);
-    a.download = 'Relevamiento - ' + dd + '.' + mm + '.' + aa + '.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('CSV descargado');
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rows })
+      });
+      showToast('Guardado en Sheets');
+    } catch(e) {
+      showToast('Error al guardar');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '&#8679; Guardar en Sheets';
+    }
   }
 
   function showToast(msg) {
