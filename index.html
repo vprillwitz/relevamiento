@@ -151,6 +151,15 @@
     </div>
   </div>
 
+  <div class="card" id="cardPapelera" style="display:none;">
+    <div class="header-row">
+      <div class="section-title" style="margin-bottom:0;">Papelera</div>
+      <button class="csv-btn" style="color:#ff3b30; border-color:#ffcccb;" onclick="vaciarPapelera()">Vaciar</button>
+    </div>
+    <p style="font-size:13px; color:#6e6e73; margin-bottom:12px;">Tramos ya guardados en Sheets</p>
+    <div id="papeleraArea"></div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -160,6 +169,7 @@
   const TIPOS = ['Preparación','Trabajo','Desarme','Ineficiencias','Retrabajo','Otros'];
   let seconds = 0, running = false, interval = null;
   let logs = JSON.parse(localStorage.getItem('timelogs_v4') || '[]');
+  let trash = JSON.parse(localStorage.getItem('timelogs_trash') || '[]');
 
   function fmt(s) {
     return [Math.floor(s/3600), Math.floor((s%3600)/60), s%60].map(n => String(n).padStart(2,'0')).join(':');
@@ -241,7 +251,7 @@
     document.getElementById('obs').value = '';
 
     showToast('Tramo guardado: ' + rec.tipo + ' · ' + rec.duracion);
-    renderChart(); renderLogs();
+    renderChart(); renderLogs(); renderPapelera();
   }
 
   function deleteTramo(id) {
@@ -255,6 +265,32 @@
     logs = [];
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
     renderChart(); renderLogs();
+  }
+
+  function vaciarPapelera() {
+    if (!confirm('Borrar definitivamente los tramos de la papelera?')) return;
+    trash = [];
+    localStorage.setItem('timelogs_trash', JSON.stringify(trash));
+    renderPapelera();
+  }
+
+  function renderPapelera() {
+    const card = document.getElementById('cardPapelera');
+    if (!trash.length) { card.style.display = 'none'; return; }
+    card.style.display = 'block';
+    const rows = trash.slice(0, 100).map(l =>
+      '<tr>' +
+      '<td style="white-space:nowrap;">' + l.fecha + '<br><span style="color:#aeaeb2;font-size:11px;">' + l.hora + '</span></td>' +
+      '<td style="max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + l.sector + '</td>' +
+      '<td><span class="badge" style="background:' + (COLORS[l.tipo]||COLORS['Otros']) + '22; color:' + (COLORS[l.tipo]||COLORS['Otros']) + ';">' + l.tipo + '</span></td>' +
+      '<td style="font-variant-numeric:tabular-nums; white-space:nowrap; font-weight:500;">' + l.duracion + '</td>' +
+      '</tr>'
+    ).join('');
+    document.getElementById('papeleraArea').innerHTML =
+      '<table class="log-table">' +
+      '<thead><tr><th>Fecha</th><th>Sector</th><th>Tipo</th><th>Tiempo</th></tr></thead>' +
+      '<tbody>' + rows + '</tbody>' +
+      '</table>';
   }
 
   function renderChart() {
