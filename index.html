@@ -339,9 +339,17 @@
     document.getElementById('usuario').value = '';
     document.getElementById('otrosTexto').value = '';
     document.getElementById('otrosField').style.display = 'none';
-    // Resetear selección de tipo
-    document.querySelectorAll('.tipo-grid:not(#editTipoGrid) .tipo-btn').forEach(b => b.classList.remove('selected'));
-    document.querySelector('.tipo-grid:not(#editTipoGrid) .tipo-btn').classList.add('selected');
+    // Mantener el botón del tipo guardado como seleccionado
+    var esTipoFijo = ['Preparación','Trabajo','Desarme','Ineficiencias','Retrabajo'].includes(tipo);
+    document.querySelectorAll('.tipo-grid:not(#editTipoGrid) .tipo-btn').forEach(function(b) {
+      b.classList.remove('selected');
+      if (b.textContent.trim() === tipo || (b.id === 'btnOtros' && !esTipoFijo)) {
+        b.classList.add('selected');
+      }
+    });
+    // Mostrar/ocultar campo Otros según corresponda
+    document.getElementById('otrosField').style.display = esTipoFijo ? 'none' : 'block';
+    if (!esTipoFijo) document.getElementById('otrosTexto').value = '';
 
     if (running) {
       document.getElementById('runningDot').style.display = 'inline-block';
