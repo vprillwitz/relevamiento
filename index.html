@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=390, initial-scale=1.0, shrink-to-fit=no">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <title>Relevamiento de Tiempos</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,7 +22,6 @@
   select:focus, input:focus, textarea:focus { outline: none; border-color: #1c1c1e; background: #fff; }
   textarea { resize: vertical; min-height: 70px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .save-btn { width: 100%; padding: 14px; margin-top: 4px; font-size: 16px; border-radius: 12px; }
   .section-title { font-size: 17px; font-weight: 600; color: #1c1c1e; margin-bottom: 1rem; }
   .bar-row { margin-bottom: 14px; }
   .bar-label { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px; }
@@ -38,8 +36,6 @@
   .log-table tr:last-child td { border-bottom: none; }
   .empty { text-align: center; color: #aeaeb2; font-size: 14px; padding: 1.5rem 0; }
   .badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 600; }
-  .delete-btn { background: none; border: none; padding: 4px 8px; cursor: pointer; color: #aeaeb2; font-size: 18px; border-radius: 6px; }
-  .delete-btn:active { color: #ff3b30; background: #fff0ef; }
   .clear-btn { width: 100%; font-size: 14px; color: #ff3b30; border-color: #ffcccb; margin-top: 12px; padding: 10px; background: transparent; }
   .csv-btn { padding: 8px 14px; font-size: 14px; }
   .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
@@ -62,22 +58,8 @@
   .modal { background: #fff; border-radius: 14px; padding: 1.25rem; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; }
   .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 1rem; color: #1c1c1e; }
   .modal-btns { display: flex; gap: 8px; margin-top: 1rem; }
-  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1.5px solid #d1d1d6; background: #fff; cursor: pointer; }
+  .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1.5px solid #d1d1d6; background: #fff; cursor: pointer; color: #1c1c1e; }
   .modal-btns button.primary { background: #1c1c1e; color: #fff; border-color: transparent; }
-
-  @media (prefers-color-scheme: dark) {
-    .titulo-app { color: #f2f2f7 !important; }
-    .modal { background: #1c1c1e; }
-    .modal h3 { color: #f2f2f7; }
-    .modal-overlay { background: rgba(0,0,0,0.6); }
-    .menu-dropdown { background: #2c2c2e; border-color: #3a3a3c; }
-    .menu-dropdown button { color: #f2f2f7; }
-    .menu-dropdown button:hover { background: #3a3a3c; }
-    .modal-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
-    .modal-btns button.primary { background: #f2f2f7; color: #1c1c1e; }
-    .confirm-box { background: #1c1c1e; }
-    .confirm-box p { color: #f2f2f7; }
-    .confirm-box-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
   .confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
   .confirm-overlay.open { display: flex; }
   .confirm-box { background: #fff; border-radius: 14px; padding: 1.5rem 1.25rem 1.25rem; width: 100%; max-width: 320px; text-align: center; }
@@ -86,7 +68,10 @@
   .confirm-box-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 500; border: 1.5px solid #d1d1d6; background: #fff; cursor: pointer; color: #1c1c1e; }
   .confirm-box-btns button.danger { background: #ff3b30; color: #fff; border-color: transparent; }
   .confirm-box-btns button.confirm-ok { background: #1c1c1e; color: #fff; border-color: transparent; }
+
+  @media (prefers-color-scheme: dark) {
     body { background: #000; color: #f2f2f7; }
+    .titulo-app { color: #f2f2f7 !important; }
     .card { background: #1c1c1e; box-shadow: none; }
     .timer { color: #f2f2f7; }
     .section-title { color: #f2f2f7; }
@@ -104,12 +89,24 @@
     .bar-label span:first-child { color: #f2f2f7; }
     .bar-label span:last-child { color: #aeaeb2; }
     .empty { color: #636366; }
-    .delete-btn { color: #636366; }
-    .delete-btn:active { color: #ff453a; background: #3a1a1a; }
+    .menu-btn { color: #636366; }
+    .menu-btn:active { background: #2c2c2e; }
     .clear-btn { color: #ff453a; border-color: #5a2020; background: transparent; }
     .toast { background: #f2f2f7; color: #1c1c1e; }
     .tipo-btn { background: #2c2c2e; color: #636366; border: 1.5px solid #3a3a3c; }
     .tipo-btn.selected { background: #f2f2f7; color: #1c1c1e; border-color: transparent; font-weight: 700; }
+    .modal { background: #1c1c1e; }
+    .modal h3 { color: #f2f2f7; }
+    .modal-overlay { background: rgba(0,0,0,0.6); }
+    .modal-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
+    .modal-btns button.primary { background: #f2f2f7; color: #1c1c1e; border-color: transparent; }
+    .menu-dropdown { background: #2c2c2e; border-color: #3a3a3c; }
+    .menu-dropdown button { color: #f2f2f7; }
+    .menu-dropdown button:hover { background: #3a3a3c; }
+    .confirm-box { background: #1c1c1e; }
+    .confirm-box p { color: #f2f2f7; }
+    .confirm-box-btns button { background: #2c2c2e; color: #f2f2f7; border-color: #3a3a3c; }
+    .confirm-box-btns button.danger { background: #ff3b30; color: #fff; border-color: transparent; }
   }
 </style>
 </head>
@@ -126,6 +123,10 @@
     <div class="btn-row">
       <button class="primary" id="btnToggle" onclick="toggleTimer()">&#9654; Iniciar</button>
       <button onclick="resetTimer()">&#8635; Reiniciar</button>
+    </div>
+    <div class="field">
+      <label for="usuario">Usuario</label>
+      <input type="text" id="usuario" placeholder="Ej: Juan Pérez" />
     </div>
     <div class="grid2">
       <div class="field">
@@ -156,8 +157,12 @@
       </div>
       <div class="field">
         <label for="personas">Cant. de personas</label>
-        <input type="number" id="personas" placeholder="Ej: 2" min="1" />
+        <input type="number" id="personas" value="1" min="1" />
       </div>
+    </div>
+    <div class="field">
+      <label for="obs">Observaciones</label>
+      <textarea id="obs" placeholder="Opcional..."></textarea>
     </div>
     <div class="field">
       <label>Tipo de Tarea</label>
@@ -170,14 +175,9 @@
         <button class="tipo-btn" onclick="selectTipo(this)" id="btnOtros">Otros</button>
       </div>
       <div id="otrosField" style="display:none; margin-top:8px;">
-        <input type="text" id="otrosTexto" placeholder="Describi la tarea..." />
+        <input type="text" id="otrosTexto" placeholder="Describí la tarea... *" />
       </div>
     </div>
-    <div class="field">
-      <label for="obs">Observaciones</label>
-      <textarea id="obs" placeholder="Opcional..."></textarea>
-    </div>
-    <button class="primary save-btn" id="btnSave" onclick="saveTramo()" disabled>+ Guardar Tramo</button>
   </div>
 
   <div class="card">
@@ -203,7 +203,7 @@
     <p id="confirmMsg"></p>
     <div class="confirm-box-btns">
       <button onclick="confirmCancel()">Cancelar</button>
-      <button class="confirm-ok" id="confirmOkBtn" onclick="confirmOk()">Aceptar</button>
+      <button class="danger" id="confirmOkBtn" onclick="confirmOk()">Aceptar</button>
     </div>
   </div>
 </div>
@@ -220,12 +220,13 @@
     </div>
     <div class="grid2">
       <div class="field"><label>Orden</label><input type="text" id="editOrden" /></div>
-      <div class="field"><label>Material</label><input type="text" id="editMaterial" /></div>
+      <div class="field"><label>Material <span style="color:#ff3b30;">*</span></label><input type="text" id="editMaterial" /></div>
     </div>
     <div class="grid2">
       <div class="field"><label>Puesto</label><input type="text" id="editPuesto" /></div>
       <div class="field"><label>Personas</label><input type="number" id="editPersonas" min="1" /></div>
     </div>
+    <div class="field"><label>Observaciones</label><textarea id="editObs"></textarea></div>
     <div class="field">
       <label>Tipo de Tarea</label>
       <div class="tipo-grid" id="editTipoGrid">
@@ -237,10 +238,9 @@
         <button class="tipo-btn" onclick="selectEditTipo(this)" id="editBtnOtros">Otros</button>
       </div>
       <div id="editOtrosField" style="display:none; margin-top:8px;">
-        <input type="text" id="editOtrosTexto" placeholder="Describi la tarea..." />
+        <input type="text" id="editOtrosTexto" placeholder="Describí la tarea..." />
       </div>
     </div>
-    <div class="field"><label>Observaciones</label><textarea id="editObs"></textarea></div>
     <div class="modal-btns">
       <button onclick="closeEditModal()">Cancelar</button>
       <button class="primary" onclick="saveEdit()">Guardar</button>
@@ -261,70 +261,60 @@
   }
 
   function selectTipo(btn) {
-    document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.tipo-grid:not(#editTipoGrid) .tipo-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     const isOtros = btn.id === 'btnOtros';
     document.getElementById('otrosField').style.display = isOtros ? 'block' : 'none';
-    if (isOtros) setTimeout(() => document.getElementById('otrosTexto').focus(), 50);
+    if (isOtros) {
+      setTimeout(() => document.getElementById('otrosTexto').focus(), 50);
+    } else {
+      // Auto-guardar al seleccionar tipo
+      autoSaveTramo();
+    }
   }
 
   function getTipo() {
-    const sel = document.querySelector('.tipo-btn.selected');
-    if (!sel) return 'Preparación';
+    const sel = document.querySelector('.tipo-grid:not(#editTipoGrid) .tipo-btn.selected');
+    if (!sel) return null;
     if (sel.id === 'btnOtros') {
       const txt = document.getElementById('otrosTexto').value.trim();
-      return txt ? txt : 'Otros';
+      return txt ? txt : null;
     }
-    return sel.textContent;
+    return sel.textContent.trim();
   }
 
-  function tick() {
-    seconds++;
-    document.getElementById('display').textContent = fmt(seconds);
-    if (seconds >= 1) document.getElementById('btnSave').disabled = false;
-  }
-
-  function toggleTimer() {
-    running = !running;
-    const btn = document.getElementById('btnToggle');
-    const bar = document.getElementById('statusBar');
-    if (running) {
-      interval = setInterval(tick, 1000);
-      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pausar';
-      btn.classList.add('primary');
-      document.getElementById('runningDot').style.display = 'inline-block';
-      document.getElementById('statusText').textContent = 'Corriendo...';
-      document.getElementById('btnSave').disabled = true;
-    } else {
-      clearInterval(interval);
-      btn.innerHTML = '&#9654; Continuar';
-      document.getElementById('runningDot').style.display = 'none';
-      document.getElementById('statusText').textContent = '';
-      if (seconds >= 1) document.getElementById('btnSave').disabled = false;
+  function validarCampos() {
+    if (seconds === 0) {
+      showToast('Iniciá el cronómetro primero');
+      return false;
     }
-  }
-
-  function resetTimer() {
-    if (seconds > 0) { showConfirm('¿Reiniciar el cronómetro?', doReset, true); return; }
-    doReset();
-  }
-  function doReset() {
-    running = false; clearInterval(interval); seconds = 0;
-    document.getElementById('display').textContent = '00:00:00';
-    document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
-    document.getElementById('btnToggle').classList.add('primary');
-    document.getElementById('btnSave').disabled = true;
-    document.getElementById('runningDot').style.display = 'none';
-    document.getElementById('statusText').textContent = '';
-  }
-
-  function saveTramo() {
-    if (seconds === 0) return;
     if (!document.getElementById('material').value.trim()) {
       document.getElementById('material').focus();
       showToast('El material es obligatorio');
+      return false;
+    }
+    return true;
+  }
+
+  function autoSaveTramo() {
+    if (!validarCampos()) return;
+    const tipo = getTipo();
+    if (!tipo) return;
+    doSaveTramo(tipo);
+  }
+
+  function guardarOtros() {
+    const txt = document.getElementById('otrosTexto').value.trim();
+    if (!txt) {
+      document.getElementById('otrosTexto').focus();
+      showToast('Describí la tarea en "Otros"');
       return;
     }
+    if (!validarCampos()) return;
+    doSaveTramo(txt);
+  }
+
+  function doSaveTramo(tipo) {
     const now = new Date();
     const rec = {
       id: Date.now(),
@@ -334,28 +324,69 @@
       orden: (document.getElementById('orden').value || '-').trimEnd(),
       material: (document.getElementById('material').value || '-').trimEnd(),
       puesto: document.getElementById('puesto').value.trim() || '-',
-      personas: document.getElementById('personas').value || '-',
-      tipo: getTipo(),
+      usuario: document.getElementById('usuario').value.trim() || '-',
+      personas: document.getElementById('personas').value || '1',
+      tipo: tipo,
       segundos: seconds,
       duracion: fmt(seconds),
-      obs: document.getElementById('obs').value || '-'
+      obs: document.getElementById('obs').value.trim() || '-'
     };
     logs.push(rec);
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
     seconds = 0;
     document.getElementById('display').textContent = '00:00:00';
     document.getElementById('obs').value = '';
-    // Si el cronometro estaba corriendo, seguir corriendo
+    document.getElementById('usuario').value = '';
+    document.getElementById('otrosTexto').value = '';
+    document.getElementById('otrosField').style.display = 'none';
+    // Resetear selección de tipo
+    document.querySelectorAll('.tipo-grid:not(#editTipoGrid) .tipo-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelector('.tipo-grid:not(#editTipoGrid) .tipo-btn').classList.add('selected');
+
     if (running) {
       document.getElementById('runningDot').style.display = 'inline-block';
       document.getElementById('statusText').textContent = 'Corriendo...';
     } else {
-      document.getElementById('btnSave').disabled = true;
       document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
-      document.getElementById('statusBar').innerHTML = '';
     }
-    showToast('Tramo guardado: ' + rec.tipo + ' · ' + rec.duracion);
+    showToast('Tramo guardado: ' + tipo + ' · ' + rec.duracion);
     renderChart(); renderLogs();
+  }
+
+  function tick() {
+    seconds++;
+    document.getElementById('display').textContent = fmt(seconds);
+  }
+
+  function toggleTimer() {
+    running = !running;
+    const btn = document.getElementById('btnToggle');
+    if (running) {
+      interval = setInterval(tick, 1000);
+      btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pausar';
+      btn.classList.add('primary');
+      document.getElementById('runningDot').style.display = 'inline-block';
+      document.getElementById('statusText').textContent = 'Corriendo...';
+    } else {
+      clearInterval(interval);
+      btn.innerHTML = '&#9654; Continuar';
+      document.getElementById('runningDot').style.display = 'none';
+      document.getElementById('statusText').textContent = '';
+    }
+  }
+
+  function resetTimer() {
+    if (seconds > 0) { showConfirm('¿Reiniciar el cronómetro?', doReset, true); return; }
+    doReset();
+  }
+
+  function doReset() {
+    running = false; clearInterval(interval); seconds = 0;
+    document.getElementById('display').textContent = '00:00:00';
+    document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
+    document.getElementById('btnToggle').classList.add('primary');
+    document.getElementById('runningDot').style.display = 'none';
+    document.getElementById('statusText').textContent = '';
   }
 
   function deleteTramo(id) {
@@ -367,12 +398,11 @@
   }
 
   function clearAll() {
-    showConfirm('¿Borrar TODOS los registros?', doClearAll, true);
-  }
-  function doClearAll() {
-    logs = [];
-    localStorage.setItem('timelogs_v4', JSON.stringify(logs));
-    renderChart(); renderLogs();
+    showConfirm('¿Borrar TODOS los registros?', function() {
+      logs = [];
+      localStorage.setItem('timelogs_v4', JSON.stringify(logs));
+      renderChart(); renderLogs();
+    }, true);
   }
 
   function renderChart() {
@@ -440,7 +470,7 @@
     btn.disabled = true;
     btn.textContent = 'Guardando...';
     const rows = [...logs].reverse().map(l =>
-      [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs, l.puesto || '-', l.personas || '-']
+      [l.usuario || '-', l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs, l.puesto || '-', l.personas || '1']
     );
     try {
       await fetch(SCRIPT_URL, {
@@ -466,8 +496,6 @@
   function showConfirm(msg, callback, isDanger) {
     confirmCallback = callback;
     document.getElementById('confirmMsg').textContent = msg;
-    var okBtn = document.getElementById('confirmOkBtn');
-    okBtn.className = isDanger ? 'danger' : 'confirm-ok';
     document.getElementById('confirmOverlay').classList.add('open');
   }
 
@@ -504,17 +532,14 @@
     document.getElementById('editOrden').value = rec.orden === '-' ? '' : rec.orden;
     document.getElementById('editMaterial').value = rec.material === '-' ? '' : rec.material;
     document.getElementById('editPuesto').value = rec.puesto === '-' ? '' : (rec.puesto || '');
-    document.getElementById('editPersonas').value = rec.personas === '-' ? '' : (rec.personas || '');
+    document.getElementById('editPersonas').value = rec.personas || '1';
     document.getElementById('editObs').value = rec.obs === '-' ? '' : rec.obs;
-
-    // Seleccionar tipo
     var tipo = rec.tipo;
-    var tiposBtnTexts = ['Preparación','Trabajo','Desarme','Ineficiencias','Retrabajo','Otros'];
     document.querySelectorAll('#editTipoGrid .tipo-btn').forEach(function(b) { b.classList.remove('selected'); });
     document.getElementById('editOtrosField').style.display = 'none';
     var found = false;
     document.querySelectorAll('#editTipoGrid .tipo-btn').forEach(function(b) {
-      if (b.textContent === tipo) { b.classList.add('selected'); found = true; }
+      if (b.textContent.trim() === tipo) { b.classList.add('selected'); found = true; }
     });
     if (!found) {
       document.getElementById('editBtnOtros').classList.add('selected');
@@ -543,7 +568,7 @@
       var txt = document.getElementById('editOtrosTexto').value.trim();
       return txt ? txt : 'Otros';
     }
-    return sel.textContent;
+    return sel.textContent.trim();
   }
 
   function saveEdit() {
@@ -555,7 +580,7 @@
     logs[idx].orden = (document.getElementById('editOrden').value || '-').trimEnd();
     logs[idx].material = mat.trimEnd();
     logs[idx].puesto = document.getElementById('editPuesto').value.trim() || '-';
-    logs[idx].personas = document.getElementById('editPersonas').value || '-';
+    logs[idx].personas = document.getElementById('editPersonas').value || '1';
     logs[idx].tipo = getEditTipo();
     logs[idx].obs = document.getElementById('editObs').value.trim() || '-';
     localStorage.setItem('timelogs_v4', JSON.stringify(logs));
@@ -569,6 +594,11 @@
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2500);
   }
+
+  // Botón guardar para "Otros"
+  document.getElementById('otrosTexto').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); guardarOtros(); }
+  });
 
   renderChart(); renderLogs();
 </script>
