@@ -419,7 +419,9 @@
       '</table>';
   }
 
-  function guardarEnSheets() {
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxAQvikcBLUDWtIsq_-D5J43DY69t-PTJXFbcTkvQWj9WfqejbwKtWpyefytmclztEC/exec';
+
+  async function guardarEnSheets() {
     if (!logs.length) { showToast('No hay registros para guardar'); return; }
     const btn = document.getElementById('btnSheets');
     btn.disabled = true;
@@ -427,21 +429,23 @@
     const rows = [...logs].reverse().map(l =>
       [l.fecha, l.hora, l.sector, l.orden, l.material, l.tipo, l.duracion, l.obs, l.puesto || '-', l.personas || '-']
     );
-    google.script.run
-      .withSuccessHandler(function() {
-        logs = [];
-        localStorage.setItem('timelogs_v4', JSON.stringify(logs));
-        renderChart(); renderLogs();
-        showToast('Guardado en Sheets');
-        btn.disabled = false;
-        btn.innerHTML = '&#8679; Guardar en Sheets';
-      })
-      .withFailureHandler(function(e) {
-        showToast('No se pudo guardar. Intentá de nuevo.');
-        btn.disabled = false;
-        btn.innerHTML = '&#8679; Guardar en Sheets';
-      })
-      .guardarTramos(rows);
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rows: rows })
+      });
+      logs = [];
+      localStorage.setItem('timelogs_v4', JSON.stringify(logs));
+      renderChart(); renderLogs();
+      showToast('Guardado en Sheets');
+    } catch(e) {
+      showToast('No se pudo guardar. Intentá de nuevo.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '&#8679; Guardar en Sheets';
+    }
   }
 
   var confirmCallback = null;
