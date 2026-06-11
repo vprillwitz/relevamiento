@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=390, initial-scale=1.0, shrink-to-fit=no">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <title>Relevamiento de Tiempos</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -289,7 +290,7 @@
     const bar = document.getElementById('statusBar');
     if (running) {
       interval = setInterval(tick, 1000);
-      btn.innerHTML = '&#9646;&#9646; Pausar';
+      btn.innerHTML = '<i class="ti ti-player-pause" aria-hidden="true"></i> Pausar';
       btn.classList.add('primary');
       bar.innerHTML = '<span class="running-dot"></span>Corriendo...';
       document.getElementById('btnSave').disabled = true;
