@@ -122,7 +122,7 @@
 
   <div class="card">
     <div class="timer" id="display">00:00:00</div>
-    <div class="status-bar" id="statusBar"></div>
+    <div class="status-bar" id="statusBar"><span class="running-dot" id="runningDot" style="display:none;"></span><span id="statusText"></span></div>
     <div class="btn-row">
       <button class="primary" id="btnToggle" onclick="toggleTimer()">&#9654; Iniciar</button>
       <button onclick="resetTimer()">&#8635; Reiniciar</button>
@@ -292,12 +292,14 @@
       interval = setInterval(tick, 1000);
       btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:4px" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pausar';
       btn.classList.add('primary');
-      bar.innerHTML = '<span class="running-dot"></span>Corriendo...';
+      document.getElementById('runningDot').style.display = 'inline-block';
+      document.getElementById('statusText').textContent = 'Corriendo...';
       document.getElementById('btnSave').disabled = true;
     } else {
       clearInterval(interval);
       btn.innerHTML = '&#9654; Continuar';
-      document.getElementById('statusBar').innerHTML = '';
+      document.getElementById('runningDot').style.display = 'none';
+      document.getElementById('statusText').textContent = '';
       if (seconds >= 1) document.getElementById('btnSave').disabled = false;
     }
   }
@@ -312,7 +314,8 @@
     document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
     document.getElementById('btnToggle').classList.add('primary');
     document.getElementById('btnSave').disabled = true;
-    document.getElementById('statusBar').innerHTML = '';
+    document.getElementById('runningDot').style.display = 'none';
+    document.getElementById('statusText').textContent = '';
   }
 
   function saveTramo() {
@@ -344,7 +347,8 @@
     document.getElementById('obs').value = '';
     // Si el cronometro estaba corriendo, seguir corriendo
     if (running) {
-      document.getElementById('statusBar').innerHTML = '<span class="running-dot"></span>Corriendo...';
+      document.getElementById('runningDot').style.display = 'inline-block';
+      document.getElementById('statusText').textContent = 'Corriendo...';
     } else {
       document.getElementById('btnSave').disabled = true;
       document.getElementById('btnToggle').innerHTML = '&#9654; Iniciar';
